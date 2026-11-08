@@ -1,17 +1,15 @@
 workflows:
   project360-android:
     name: Project360 Xbox 360 Emulator (ARM64)
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
     max_build_duration: 120
     environment:
-      ubuntu: 24.04
       java: 21
       ndk: 29.0.14206865
     scripts:
       - name: Install native build tools
         script: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build python3 glslang-tools spirv-tools ccache
+          brew install ninja glslang spirv-tools ccache
       - name: Install Android SDK components
         script: |
           yes | sdkmanager --licenses >/dev/null || true
@@ -28,7 +26,7 @@ workflows:
           printf 'cmake.dir=%s/cmake/3.30.3\n' "$ANDROID_SDK_ROOT" >> local.properties
       - name: Brand app as Project360 and retain upstream credits
         script: |
-          sed -i 's#<string name="app_name">Xendroid+</string>#<string name="app_name">Project360 (Xendroid+ core)</string>#' \
+          sed -i '' 's#<string name="app_name">Xendroid+</string>#<string name="app_name">Project360 (Xendroid+ core)</string>#' \
             xendroid-plus/app/src/main/res/values/strings.xml
       - name: Build ARM64 Android APK
         script: |
